@@ -14,6 +14,20 @@ from IPython.display import display
 from ipywidgets import Label, Layout, HBox
 from IPython.display import display
 
+from ipywidgets import Label, Layout, HBox
+from IPython.display import display
+
+
+
+"""
+    DataParam : It is a class that include all the information of a scenario 
+    (target pt, hedge pt, window length, modelID, window mode, start date, end date)
+
+
+        __init__(self): set the initial values by interactive widget
+
+        Update(self,modeldic): update all values before running the model
+"""
 class DataParam:
     def __init__(self):
         self.target_index =widgets.IntText(
@@ -43,6 +57,22 @@ class DataParam:
             layout = widgets.Layout(width='150px')
         )
         
+        self.start =widgets.Text(
+            value='26/10/2020',
+            description='Start Date',
+            style={'description_width': 'initial'},
+            layout = widgets.Layout(width='150px')
+        )
+        
+        self.end =widgets.Text(
+            value='29/7/2022',
+            description='End Date',
+            style={'description_width': 'initial'},
+            layout = widgets.Layout(width='150px')
+        )
+
+        self.dropdown_window = widgets.Dropdown(options=['Rolling', 'Selected Window'], description='Window Mode:',style={'description_width': 'initial'},layout = widgets.Layout(width='200px'))
+        
         
         
         self.number_chart_list = []
@@ -56,8 +86,13 @@ class DataParam:
         self.hedge = self.number_chart_list
         self.window_size = self.window_index.value
         self.i = self.index.value
+        self.s=self.start.value
+        self.e=self.end.value
+        self.mode=self.dropdown_window.value
         
-        line=HBox(children=[self.target_index, self.pillar_textbox, self.window_index, self.index])
+        line1=HBox(children=[self.target_index, self.pillar_textbox, self.window_index, self.index])
+        line2=HBox(children=[self.dropdown_window, self.start, self.end])
+        line=VBox(children=[line1, line2])
         display(line)
     
     def Update(self,modeldic):
@@ -72,11 +107,24 @@ class DataParam:
         self.hedge = self.number_chart_list
         self.window_size = self.window_index.value
         self.i = self.index.value
+        self.s=self.start.value
+        self.e=self.end.value
+        self.mode=self.dropdown_window.value
         
-        
-        
-    
 
+
+
+"""
+    Modelparam : It is a class that include all the information of a model 
+    (period, number of components, )
+
+
+        __init__(self): set the initial values by interactive widget
+
+        Update(self,modeldic): update all values before running the model
+
+        GetName(self): get the model ID
+"""        
 class Modelparam:
     def __init__(self, index):
         self.dropdown_models=widgets.Dropdown(
@@ -87,7 +135,7 @@ class Modelparam:
         )
 
         self.period =widgets.IntText(
-            value=2,
+            value=1,
             description='Period:',
             style={'description_width': 'initial'},
             layout = widgets.Layout(width='200px')
@@ -124,7 +172,7 @@ class Modelparam:
                             
                                     flex_flow='column',
                                     align_items='stretch',
-                                    border='solid 3px #6297bf',
+                                    border='solid 3px #00ACFC',
                                     width='100%')
         self.name = index
         self.period_index = self.period.value
@@ -137,7 +185,7 @@ class Modelparam:
         z = Label("Model ID"+self.name, layout=Layout(display="flex", justify_content="flex-end", width="30%", border="solid"))
         
         
-        line=GridBox(children=[self.dropdown_models, self.period, self.number_of_components, self.lamb_index1,self.lamb_index2,z], layout=box_layout)
+        line=GridBox(children=[self.period, self.number_of_components, self.lamb_index1,self.lamb_index2,z], layout=box_layout)
         display(line)
 
     def Update(self): 
